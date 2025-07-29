@@ -149,3 +149,6 @@
   right: 10px;
 }
 
+.leaflet-attribution-flag {
+  display: none !important;
+}
