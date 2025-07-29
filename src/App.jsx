@@ -35,6 +35,45 @@ const App = () => {
       attribution:
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
+
+      // Function to remove the Leaflet attribution flag if it exists
+  const removeLeafletFlag = () => {
+    document.querySelectorAll('.leaflet-attribution-flag').forEach(el => el.remove());
+  };
+
+  // Initial cleanup (in case the flag already exists when the page loads)
+  removeLeafletFlag();
+
+  // Create a MutationObserver to watch for new child nodes
+  const observer = new MutationObserver((mutationsList) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const flagElement = node.querySelector?.('.leaflet-attribution-flag')
+              || (node.classList?.contains('leaflet-attribution-flag') ? node : null);
+            if (flagElement) {
+              flagElement.remove(); // Remove the flag element if it's found
+            }
+          }
+        });
+      }
+    }
+
+    // Safety check in case it was added before the MutationObserver starts
+    removeLeafletFlag();
+  });
+
+  // Start observing the document body for added child nodes
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  // Cleanup the observer when the component is unmounted
+  return () => {
+    observer.disconnect();
+  };
   });
 
   const zipZoom = (zip) => {
