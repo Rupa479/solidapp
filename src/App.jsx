@@ -71,7 +71,7 @@ const App = () => {
           </a>
         `;
 
-        marker.bindPopup(popupContent, { closeOnClick: false, autoClose: false });
+        marker.bindPopup(popupContent, { closeOnClick: false, autoClose: false, autopan: false });
         marker.openPopup();
 
         setTimeout(() => {
@@ -87,11 +87,13 @@ const App = () => {
             });
           };
 
-          popupEl.addEventListener('mouseover', addProjectIfNotExists);
+          popupEl.addEventListener('click', addProjectIfNotExists);
           popupEl.addEventListener('touchstart', addProjectIfNotExists);
         }, 0);
       });
     });
+
+    map.setView([29.76328, -95.36327], 11);
 
     onCleanup(() => {
       map.remove();
