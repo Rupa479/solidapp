@@ -1,10 +1,11 @@
 import 'leaflet/dist/leaflet.css';
-import { onMount, createSignal, For } from 'solid-js';
+import { onMount, createSignal, For, onCleanup } from 'solid-js';
 import L from 'leaflet';
 import SearchBar from './components/SearchBar';
 import { zipCodes } from './zipCodes';
 import { projects } from './projects';
-import xout  from './assets/cross-svgrepo-com.svg'
+import xout from './assets/cross-svgrepo-com.svg';
+
 const App = () => {
   let mapRef;
   let map;
@@ -18,12 +19,9 @@ const App = () => {
     );
 
     if (results.length > 0) {
-      console.log(`Found ${results.length} projects for zip code ${zip}:`);
-      results.forEach((project) => console.log(project.projectName));
       setPopupProjects(results);
     } else {
-      console.log(`No projects found for ZIP ${zip}`);
-      setPopupProjects([]); // clear rectangles if none found
+      setPopupProjects([]);
     }
   }
 
@@ -32,62 +30,85 @@ const App = () => {
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
-      // Function to remove the Leaflet attribution flag if it exists
-  const removeLeafletFlag = () => {
-    document.querySelectorAll('.leaflet-attribution-flag').forEach(el => el.remove());
-  };
+    const removeLeafletFlag = () => {
+      document.querySelectorAll('.leaflet-attribution-flag').forEach(el => el.remove());
+    };
 
-  // Initial cleanup (in case the flag already exists when the page loads)
-  removeLeafletFlag();
-
-  // Create a MutationObserver to watch for new child nodes
-  const observer = new MutationObserver((mutationsList) => {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        mutation.addedNodes.forEach(node => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const flagElement = node.querySelector?.('.leaflet-attribution-flag')
-              || (node.classList?.contains('leaflet-attribution-flag') ? node : null);
-            if (flagElement) {
-              flagElement.remove(); // Remove the flag element if it's found
-            }
-          }
-        });
-      }
-    }
-
-    // Safety check in case it was added before the MutationObserver starts
     removeLeafletFlag();
-  });
 
-  // Start observing the document body for added child nodes
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const flagElement = node.querySelector?.('.leaflet-attribution-flag')
+                || (node.classList?.contains('leaflet-attribution-flag') ? node : null);
+              if (flagElement) {
+                flagElement.remove();
+              }
+            }
+          });
+        }
+      }
+      removeLeafletFlag();
+    });
 
-  // Cleanup the observer when the component is unmounted
-  return () => {
-    observer.disconnect();
-  };
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    projects.forEach((project) => {
+      project.points.forEach(([lat, lng, label]) => {
+        const marker = L.marker([lat, lng]).addTo(map);
+
+        const popupContent = `
+          <a href="${project.link}" target="_blank" rel="noopener noreferrer" style="font-weight:bold; text-decoration:none; color:#007bff;">
+            ${label}
+          </a>
+        `;
+
+        marker.bindPopup(popupContent, { closeOnClick: false, autoClose: false });
+        marker.openPopup();
+
+        setTimeout(() => {
+          const popupEl = marker.getPopup()?.getElement();
+          if (!popupEl) return;
+
+          const addProjectIfNotExists = () => {
+            setPopupProjects(prev => {
+              if (!prev.some(p => p.projectName === project.projectName)) {
+                return [...prev, project];
+              }
+              return prev;
+            });
+          };
+
+          popupEl.addEventListener('mouseover', addProjectIfNotExists);
+          popupEl.addEventListener('touchstart', addProjectIfNotExists);
+        }, 0);
+      });
+    });
+
+    onCleanup(() => {
+      map.remove();
+      observer.disconnect();
+    });
   });
 
   const zipZoom = (zip) => {
     const userZip = parseInt(zip, 10);
-
     const match = zipCodes.find((item) => item[0] === userZip);
 
     if (match) {
-      const [zip, latitude, longitude] = match;
+      const [, latitude, longitude] = match;
       map.flyTo([latitude, longitude], 13);
       searchProjectsByZip(userZip);
     } else {
-      console.log('ZIP NOT FOUND.');
-      setPopupProjects([]); // clear rectangles if no zip match
+      setPopupProjects([]);
     }
   };
 
@@ -96,27 +117,26 @@ const App = () => {
       <SearchBar onSearch={zipZoom} placeholder1={placeholder()} />
       <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
 
-      {/* Rectangle container */}
       <div class="rectangle-container">
         <For each={popupProjects()}>
           {(project, index) => (
             <div class="pop-up-rectangle glassmorphism">
-              <div class='exit'>
-                <img src={xout} height='24px' width='24px' id='x-out' onClick={() => setPopupProjects((prev) => prev.filter((_, i) => i !== index()))}/>
-                </div>
-              <h3 style='align-items: center'>{project.projectName}
-
-    
-              </h3>
-             
+              <div class="exit">
+                <img
+                  src={xout}
+                  height="24px"
+                  width="24px"
+                  id="x-out"
+                  onClick={() =>
+                    setPopupProjects((prev) => prev.filter((_, i) => i !== index()))
+                  }
+                />
+              </div>
+              <h3>{project.projectName}</h3>
               <p>{project.start} - {project.completion}</p>
               <p>Project stage: {project.constructionStage}</p>
-              <p><a href={project.link}>Click to learn more</a></p>
+              <p><a href={project.link} target="_blank" rel="noopener noreferrer">Click to learn more</a></p>
               <p>{project.summary}</p>
-              
-              <p></p>
-
-      
             </div>
           )}
         </For>

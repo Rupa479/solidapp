@@ -7,7 +7,8 @@ export const projects = [
         "constructionStage": "Design",
         "summary": "Subproject 2 in the Arlington Heights Area focuses on key improvements in drainage, paving, and utilities to enhance neighborhood safety and quality of life. Key benefits include reducing flooding risks, improving road conditions for all travelers, upgrading essential utilities, and strengthening neighborhood sustainability. These changes will make the area more resilient, safer, and more comfortable for residents, supporting long-term growth and stability.",
         "link":"https://www.engagehouston.org/arlington-heights-2",
-        "zipCode": [77034]
+        "zipCode": [77034],
+        "points": [[29.648058554458075, -95.21120097136968, "Arlington Heights Area - Subproject 2"]]
     },
 
     {
@@ -17,7 +18,9 @@ export const projects = [
         "constructionStage": "Design",
         "summary": "The Avalon Place Sanitary Sewer project focuses on modernizing aging infrastructure by installing 34,000 feet of new wastewater lines and improving stormwater management with upgraded drainage systems. The project also includes comprehensive neighborhood improvements, such as resurfacing streets, enhancing sidewalks, adding street lighting, and improving signage. This initiative supports the community’s growth and resilience, ensuring that infrastructure meets the evolving needs of the historic Avalon Place neighborhood, enhancing both safety and quality of life for residents.",
         "link":"https://www.engagehouston.org/avalon-place-sanitary-sewer",
-        "zipCode": [77019]
+        "zipCode": [77019],
+           "points": [[29.745071554078816, -95.41261570394592, "Avalon Place"]]
+     
     },
 
 
@@ -28,7 +31,8 @@ export const projects = [
         "constructionStage": "Design",
         "summary": "The Boone & Hackberry Detention Basins project aims to reduce flood risk and protect surrounding neighborhoods by managing stormwater more efficiently. The construction of two detention ponds will lower flooding risks, protect drainage channels from erosion and overflows, and enhance neighborhood resilience against future storms. The project not only boosts public safety by preserving emergency access during high-water events but also improves residents' quality of life by minimizing flooding concerns and ensuring greater property security and neighborhood stability.",
         "link":"https://www.engagehouston.org/boone-hackberry",
-        "zipCode": [77072]
+        "zipCode": [77072],
+        "points": [[29.694839895818454, -95.60316464776234, "Boone & Hackberry Detention Basins(Hackberry Basin)"], [29.695912290758884, -95.57716243278372, "Boone & Hackberry Detention Basins (Boone Basin)"]]
     },
 
         {
