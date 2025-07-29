@@ -1,5 +1,5 @@
 import 'leaflet/dist/leaflet.css';
-import { onMount, createSignal, For, onCleanup } from 'solid-js';
+import { onMount, createSignal, For, onCleanup, createEffect } from 'solid-js';
 import L from 'leaflet';
 import SearchBar from './components/SearchBar';
 import { zipCodes } from './zipCodes';
@@ -9,9 +9,13 @@ import xout from './assets/cross-svgrepo-com.svg';
 const App = () => {
   let mapRef;
   let map;
+  const [location, setLocation] = createSignal(null);
+  const [userDenied, setUserDenied] = createSignal(false);
 
   const [placeholder, setPlaceholder] = createSignal('Enter a zip code within Houston');
   const [popupProjects, setPopupProjects] = createSignal([]);
+
+  const defaultLocation = [29.76328, -95.36327];
 
   function searchProjectsByZip(zip) {
     const results = projects.filter((project) =>
@@ -26,7 +30,7 @@ const App = () => {
   }
 
   onMount(() => {
-    map = L.map(mapRef).setView([29.76328, -95.36327], 11);
+    map = L.map(mapRef).setView(defaultLocation, 11);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -72,28 +76,65 @@ const App = () => {
         `;
 
         marker.bindPopup(popupContent, { closeOnClick: false, autoClose: false, autopan: false });
-        marker.openPopup();
 
-        setTimeout(() => {
-          const popupEl = marker.getPopup()?.getElement();
-          if (!popupEl) return;
+        marker.on('mouseover', () => {
+          marker.openPopup();
 
-          const addProjectIfNotExists = () => {
-            setPopupProjects(prev => {
-              if (!prev.some(p => p.projectName === project.projectName)) {
-                return [...prev, project];
-              }
-              return prev;
-            });
-          };
+          setPopupProjects(prev => {
+            if (!prev.some(p => p.projectName === project.projectName)) {
+              return [...prev, project];
+            }
+            return prev;
+          });
+        });
 
-          popupEl.addEventListener('click', addProjectIfNotExists);
-          popupEl.addEventListener('touchstart', addProjectIfNotExists);
-        }, 0);
+        marker.on('touchstart', () => {
+          marker.openPopup();
+
+          setPopupProjects(prev => {
+            if (!prev.some(p => p.projectName === project.projectName)) {
+              return [...prev, project];
+            }
+            return prev;
+          });
+        });
+
+        marker.on('mouseout', () => {
+          marker.closePopup();
+        });
       });
     });
 
-    map.setView([29.76328, -95.36327], 11);
+    map.setView(defaultLocation, 11);
+
+    createEffect(() => {
+      const getUserLocation = () => {
+        return new Promise((resolve, reject) => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              position => resolve({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              }),
+              error => reject(error.message)
+            );
+          } else {
+            reject("Geolocation is not supported by this browser.");
+          }
+        });
+      };
+
+      getUserLocation()
+        .then(location => {
+          setLocation(location);
+          map.setView([location.latitude, location.longitude], 13);
+        })
+        .catch(error => {
+          if (error === "User denied Geolocation") {
+            setUserDenied(true);
+          }
+        });
+    });
 
     onCleanup(() => {
       map.remove();
@@ -118,7 +159,7 @@ const App = () => {
     <div style={{ height: '100vh', width: '100vw', position: 'relative' }}>
       <SearchBar onSearch={zipZoom} placeholder1={placeholder()} />
       <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
-
+      
       <div class="rectangle-container">
         <For each={popupProjects()}>
           {(project, index) => (
