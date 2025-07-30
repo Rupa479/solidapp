@@ -5,6 +5,9 @@ import SearchBar from './components/SearchBar';
 import { zipCodes } from './zipCodes';
 import { projects } from './projects';
 import xout from './assets/cross-svgrepo-com.svg';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 const App = () => {
   let mapRef;
@@ -16,6 +19,12 @@ const App = () => {
   const [popupProjects, setPopupProjects] = createSignal([]);
 
   const defaultLocation = [29.76328, -95.36327];
+
+  L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
   function searchProjectsByZip(zip) {
     const results = projects.filter((project) =>
@@ -101,6 +110,13 @@ const App = () => {
 
         marker.on('mouseout', () => {
           marker.closePopup();
+
+          setTimeout(() => {
+ setPopupProjects(prev =>
+    prev.filter(p => p.projectName !== project.projectName)
+  );
+}, 3000);
+            
         });
       });
     });
