@@ -505,7 +505,7 @@ export const projects = [
         "summary": "The Rehabilitation of Water Storage Tanks – Package 15 is vital for ensuring the quality, safety, and reliability of Houston’s drinking water. This project involves cleaning, repairing, and recoating tanks to prevent contamination, extend the life of critical infrastructure, and ensure a reliable water supply during peak times and emergencies. It also enhances system resilience and improves operational efficiency, ultimately saving resources and ensuring better service for the city.",
         "link":"https://www.engagehouston.org/rehabilitation-of-water-storage-tanks-package-15",
         "zipCode": [77084, 77325, 77339, 77345, 77346, 77053],
-        "points": [[29.728558533948906, -95.4500688037501 "Southwest GST 1, 3, 4"], [29.945884961757194, -95.43634452219676 "Greens Crossing GST 1"], [29.95160266597652, -95.42419932526637 "Northborough 2 - EST 1"], [29.939291826206826, -95.43417191777355 "Greens Crossing EST 1"], [29.97043176205568, -95.54666325190887, "Centerfield GST 1"], [29.954835069978948, -95.53489728539624, "Willowbrook Mall EST 1"], [30.000902108869774, -95.23027928081528, "Moonshine Hill GST 1"]]
+        "points": [[29.728558533948906, -95.4500688037501, "Southwest GST 1, 3, 4"], [29.945884961757194, -95.43634452219676, "Greens Crossing GST 1"], [29.95160266597652, -95.42419932526637, "Northborough 2 - EST 1"], [29.939291826206826, -95.43417191777355 "Greens Crossing EST 1"], [29.97043176205568, -95.54666325190887, "Centerfield GST 1"], [29.954835069978948, -95.53489728539624, "Willowbrook Mall EST 1"], [30.000902108869774, -95.23027928081528, "Moonshine Hill GST 1"]]
     },
         {
         "projectName": "Richmond Plaza(South) Improvements",
