@@ -662,17 +662,6 @@ export const projects = [
         "points": [[29.80911523637991, -95.23812479077782, "Wynnewood Acres Area"]]
     },
 
-                    {
-        "projectName": "Example Demo Project",
-        "start": "Summer 2024",
-        "completion": "Winter 2026",
-        "constructionStage": "Construction",
-        "summary": "This is a demo summary. ",
-        "link":"https://www.engagehouston.org/wynnewood_acres",
-        "zipCode": [77025, 77024],
-        "points": [[0, 1, "A random point"], [25, 25, "Another random point"]]
-    }
-
 
 
 
