@@ -653,7 +653,7 @@ export const projects = [
 
                 {
         "projectName": "Wynnewood Acres Area",
-        "start": "Wynnewood Acres Area",
+        "start": "Summer 2024",
         "completion": "Winter 2026",
         "constructionStage": "Construction",
         "summary": "The Wynnewood Acres Area project focuses on reducing flooding risks by improving drainage and stormwater outfalls, ensuring better water flow during heavy rain. New concrete paving strengthens infrastructure, making roads safer and more durable. These upgrades protect homes from water damage, enhance resilience, and improve the overall quality of life by creating a safer, more reliable environment for residents.",
@@ -661,6 +661,18 @@ export const projects = [
         "zipCode": [77013],
         "points": [[29.80911523637991, -95.23812479077782, "Wynnewood Acres Area"]]
     },
+
+                    {
+        "projectName": "Example Demo Project",
+        "start": "Summer 2024",
+        "completion": "Winter 2026",
+        "constructionStage": "Construction",
+        "summary": "This is a demo summary. ",
+        "link":"https://www.engagehouston.org/wynnewood_acres",
+        "zipCode": [77025, 77024],
+        "points": [[0, 1, "A random point"], [25, 25, "Another random point"]]
+    }
+
 
 
 
